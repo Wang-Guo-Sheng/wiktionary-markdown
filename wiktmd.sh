@@ -21,3 +21,4 @@ sed -i 's/\[\([^]]*\)\]([^h][^t][^t][^p][^)]*\("[^"]*"\)\?)/\[\[\1\]\]/g' ${outf
 
 sed -i '/NewPP limit report/,$d' ${outfile}
 sed -i '/^$/d' ${outfile}
+sed -i 's/\([^^]\)\s\+/\1 /g' ${outfile}
