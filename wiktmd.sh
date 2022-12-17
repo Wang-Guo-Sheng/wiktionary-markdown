@@ -17,10 +17,12 @@ sed -i 's/^\- \[IPA\].*/\- \IPA:/' ${outfile} # IPA instruction links
 # sed -i 's/\[\([^]]*\)\](Appendix:[^)]*)/\1/g' ${outfile}
 sed -i 's/\[\([^]]*\)\](\/wiki\/Appendix:\([^)]*\))/\[\1\](https:\/\/en.wiktionary.org\/wiki\/Appendix:\2)/g' ${outfile}
 sed -i 's/[(]\/wiki\//(/g' ${outfile} # convert wiktionary links to common links
-sed -i '/https\?:/!s/\[\([^]]*\)\]([^)]*\("[^"]*"\)\?)/\[\[\1\]\]/g' ${outfile} # other internal links
-sed -i 's/\^((\(.*\)))/\^(\1)\^/g' ${outfile}
+./internal_links.py ${outfile}
+./compact_etym.py ${outfile}
 
 sed -i '/NewPP limit report/,$d' ${outfile}
+sed -i 's/\^((\(.*\)))/\^(\1)\^/g' ${outfile}
 sed -i '/^$/d' ${outfile}
 sed -i 's/\([^^]\)\s\+/\1 /g' ${outfile}
 sed -i 's/^\#/\n\#/' ${outfile}
+sed -i 's/ //g' ${outfile}
