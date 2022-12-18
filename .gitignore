@@ -1,6 +1,9 @@
 *.md
 *.txt
 *.html
+*.pdf
+*.log
 .obsidian/
-tmp*
+*tmp*
+*test*
 */*
