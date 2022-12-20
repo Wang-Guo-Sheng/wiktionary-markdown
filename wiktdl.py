@@ -12,11 +12,11 @@ parser = argparse.ArgumentParser(prog='wiktdl',
                                  description='Extract word definition in a specified language from english wiktionary',
                                  epilog='Usage: wiktdl <word> <Language>')
 parser.add_argument('word', type=str, nargs=1)
-parser.add_argument('lang', type=str, nargs=1)
+parser.add_argument('Language', type=str, nargs=1)
 
 args = parser.parse_args()
 word = args.word[0]
-lang_id = args.lang[0]
+lang_id = args.Language[0]
 
 baseurl = "https://en.wiktionary.org/wiki/"
 url = baseurl + word

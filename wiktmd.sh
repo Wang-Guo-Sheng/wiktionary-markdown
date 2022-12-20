@@ -1,9 +1,23 @@
 #!/usr/bin/zsh
-# Usage: wiktmd.sh <word> <language> [output-directory]
+# Usage: wiktmd.sh [option] <word> <language> [output-directory]
+Help(){
+	echo "Usage: wiktmd.sh <word> <language> [output-directory]"
+}
+while getopts ":h" option; do
+   case $option in
+      h) # display Help
+         Help
+         exit;;
+      *)
+         echo "No such option"
+   esac
+done
+
+BASEDIR=$(dirname "$0")
 outdir=${3:-'.'}
 outfile=${outdir}/${1}.md
 
-(pandoc -f html  -t gfm-raw_html <(./wiktdl.py $1 $2)) > ${outfile}
+(pandoc -f html  -t gfm-raw_html <(${BASEDIR}/wiktdl.py $1 $2)) > ${outfile}
 sed -i 's/\\\[\[edit\]\(.*\)\\\]//g' ${outfile} # edit buttons
 for ln in $(grep -En "File:.*\.ogg" ${outfile} | cut -d: -f1); do
 	# audio links
@@ -12,13 +26,13 @@ for ln in $(grep -En "File:.*\.ogg" ${outfile} | cut -d: -f1); do
 done
 
 sed -i 's/^\- \[IPA\].*/\- \IPA:/' ${outfile} # IPA instruction links
-./multiline_brackets.py ${outfile}
+${BASEDIR}/multiline_brackets.py ${outfile}
 
 # sed -i 's/\[\([^]]*\)\](Appendix:[^)]*)/\1/g' ${outfile}
 sed -i 's/\[\([^]]*\)\](\/wiki\/Appendix:\([^)]*\))/\[\1\](https:\/\/en.wiktionary.org\/wiki\/Appendix:\2)/g' ${outfile}
 sed -i 's/[(]\/wiki\//(/g' ${outfile} # convert wiktionary links to common links
-./internal_links.py ${outfile}
-./compact_etym.py ${outfile}
+${BASEDIR}/internal_links.py ${outfile}
+${BASEDIR}/compact_etym.py ${outfile}
 
 sed -i '/NewPP limit report/,$d' ${outfile}
 sed -i 's/\^((\(.*\)))/\^(\1)\^/g' ${outfile}
