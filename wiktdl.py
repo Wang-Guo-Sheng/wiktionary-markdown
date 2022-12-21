@@ -8,6 +8,9 @@ import argparse
 import traceback
 import logging
 
+import sys
+sys.tracebacklimit = 0
+
 parser = argparse.ArgumentParser(prog='wiktdl',
                                  description='Extract word definition in a specified language from english wiktionary',
                                  epilog='Usage: wiktdl <word> <Language>')
@@ -36,6 +39,9 @@ try:
         outtext += str(h)
         if (h.name == "hr") or (h.name == "h2"):
             break
+except AttributeError as exp:
+    raise ValueError(
+        "\"{}\" cannot be found in english wiktionary.".format(word)) from exp
 except Exception:
     logging.error(traceback.format_exc())
 else:
