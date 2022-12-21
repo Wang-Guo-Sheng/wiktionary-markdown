@@ -19,7 +19,7 @@ outfile=${outdir}/${1}.md
 
 (pandoc -f html  -t gfm-raw_html <(${BASEDIR}/wiktdl.py $1 $2)) > ${outfile}
 sed -i 's/\\\[\[edit\]\(.*\)\\\]//g' ${outfile} # edit buttons
-for ln in $(grep -En "File:.*\.ogg" ${outfile} | cut -d: -f1); do
+for ln in $(grep -En "File:.*\.(ogg|wav)" ${outfile} | cut -d: -f1); do
 	# audio links
 	ln0=$(expr ${ln} - 2)
 	sed -i "${ln0},${ln}s/.*//" ${outfile}
