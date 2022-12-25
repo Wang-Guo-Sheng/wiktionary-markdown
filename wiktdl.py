@@ -1,7 +1,8 @@
 #!/usr/bin/python
 
 from bs4 import BeautifulSoup
-import requests
+# import requests
+import dryscrape
 
 import argparse
 
@@ -21,27 +22,42 @@ args = parser.parse_args()
 word = args.word[0]
 lang_id = args.Language[0]
 
-baseurl = "https://en.wiktionary.org/wiki/"
+# using local kiwix wiktionary
+baseurl = 'http://192.168.2.18:8081/viewer#wiktionary_en_all_maxi_2022-09/A/'
+# baseurl = "https://en.wiktionary.org/wiki/"
+
 url = baseurl + word
 
-r = requests.get(url)
-data = r.text
+# r = requests.get(url)
+# data = r.text
+# print(data)
+
+session = dryscrape.Session()
+session.visit(my_url)
+data = session.body()
 
 soup = BeautifulSoup(data, features="lxml")
-mpo = soup.find('div', {"class": "mw-parser-output"})
+mpo = soup.find('div', id="mw-content-text")
 try:
+    # online wiktionary
     h = mpo.find('span', id=lang_id).parent
     outtext = str(h).replace(lang_id, word)
     while h:
         h = h.nextSibling
         if h is None:
             break
-        outtext += str(h)
         if (h.name == "hr") or (h.name == "h2"):
             break
-except AttributeError as exp:
-    raise ValueError(
-        "\"{}\" cannot be found in english wiktionary.".format(word)) from exp
+        outtext += str(h)
+except AttributeError:
+    try:
+        # offline kiwix service
+        h = ''.join(
+            mpo.find('h2', id=lang_id).parent.find_next_siblings('details'))
+        outtext = str(h).replace(lang_id, word)
+    except AttributeError as exp:
+        raise ValueError(
+            "\"{}\" cannot be found in english wiktionary.".format(word)) from exp
 except Exception:
     logging.error(traceback.format_exc())
 else:
