@@ -36,9 +36,9 @@ try:
         h = h.nextSibling
         if h is None:
             break
-        outtext += str(h)
         if (h.name == "hr") or (h.name == "h2"):
             break
+        outtext += str(h)
 except AttributeError as exp:
     raise ValueError(
         "\"{}\" cannot be found in english wiktionary.".format(word)) from exp
